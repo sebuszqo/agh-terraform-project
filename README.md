@@ -9,3 +9,6 @@ This project manages AWS infrastructure using Terraform, including a bastion hos
 - Apply changes: `make apply`
 - Destroy resources: `make destroy`
 - Format terraform code: `make fmt`
+
+## terraform-backend
+This catalog creates S3 bucket that is used to store tfstate for "terraform" catalog that is main app.
