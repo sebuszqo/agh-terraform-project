@@ -3,30 +3,6 @@ resource "aws_key_pair" "app_key" {
   public_key = file("~/.ssh/app_key.pub")
 }
 
-resource "aws_instance" "app" {
-  count         = 2
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  key_name        = aws_key_pair.app_key.key_name
-  subnet_id     = element(var.subnet_ids, count.index)
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
-
-  user_data = <<-EOF
-      #!/bin/bash
-      yum update -y
-      yum install -y httpd
-      systemctl start httpd
-      systemctl enable httpd
-    
-      echo "Hello, World! ${count.index}" > /var/www/html/index.html
-  EOF
-
-
-  tags = {
-    Name = "App-Instance-${count.index}"
-  }
-}
-
 resource "aws_security_group" "app_sg" {
   name   = "app-security-group"
   vpc_id = var.vpc_id
@@ -56,10 +32,61 @@ resource "aws_security_group" "app_sg" {
   }
 }
 
+resource "aws_launch_template" "app" {
+  name          = "app-launch-template"
+  instance_type = var.instance_type
+  image_id           = var.ami_id
+  key_name      = aws_key_pair.app_key.key_name
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
 
-resource "aws_lb_target_group_attachment" "app" {
-  count             = length(aws_instance.app)
-  target_group_arn  = var.target_group_arn
-  target_id         = aws_instance.app[count.index].id
-  port              = 80
+  user_data = base64encode(<<-EOF
+      #!/bin/bash
+      yum update -y
+      yum install -y httpd
+      systemctl start httpd
+      systemctl enable httpd
+    
+      echo "Hello, World from ASG!" > /var/www/html/index.html
+  EOF
+  )
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "App-Instance"
+    }
+  }
+}
+
+resource "aws_autoscaling_group" "app" {
+  launch_template {
+    id      = aws_launch_template.app.id
+    version = "$Latest"
+  }
+
+  min_size           = 2
+  max_size           = 2
+  desired_capacity   = 2
+  vpc_zone_identifier = var.subnet_ids
+  target_group_arns  = [var.target_group_arn]
+
+  tags = [
+    {
+      key                 = "Name"
+      value               = "App-Instance"
+      propagate_at_launch = true
+    }
+  ]
+}
+
+data "aws_autoscaling_group" "app_asg" {
+  name = aws_autoscaling_group.app.name
+}
+
+data "aws_instances" "app_instances" {
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = [data.aws_autoscaling_group.app_asg.name]
+  }
 }

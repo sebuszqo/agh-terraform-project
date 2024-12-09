@@ -1,7 +1,9 @@
 output "instance_ids" {
-  value = aws_instance.app[*].id
+  description = "IDs of instances in the Auto Scaling Group"
+  value = data.aws_instances.app_instances.ids
 }
 
 output "private_ips" {
-  value = aws_instance.app[*].private_ip
+  description = "Private IPs of instances in the Auto Scaling Group"
+  value = data.aws_instances.app_instances.private_ips
 }
