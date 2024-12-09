@@ -33,10 +33,10 @@ resource "aws_security_group" "app_sg" {
 }
 
 resource "aws_launch_template" "app" {
-  name          = "app-launch-template"
-  instance_type = var.instance_type
-  image_id           = var.ami_id
-  key_name      = aws_key_pair.app_key.key_name
+  name                   = "app-launch-template"
+  instance_type          = var.instance_type
+  image_id               = var.ami_id
+  key_name               = aws_key_pair.app_key.key_name
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
   user_data = base64encode(<<-EOF
@@ -65,11 +65,11 @@ resource "aws_autoscaling_group" "app" {
     version = "$Latest"
   }
 
-  min_size           = 2
-  max_size           = 2
-  desired_capacity   = 2
+  min_size            = 2
+  max_size            = 2
+  desired_capacity    = 2
   vpc_zone_identifier = var.subnet_ids
-  target_group_arns  = [var.target_group_arn]
+  target_group_arns   = [var.target_group_arn]
 
   tags = [
     {

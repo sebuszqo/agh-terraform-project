@@ -1,5 +1,5 @@
 output "bastion_public_ip" {
-  value = module.bastion.bastion_public_ip
+  value       = module.bastion.bastion_public_ip
   description = "Public IP address of the bastion instance"
 }
 
@@ -8,9 +8,9 @@ output "load_balancer_dns" {
   value       = module.alb.dns_name
 }
 
-output "app_ips"{
+output "app_ips" {
   description = "App instances private IPs"
-  value =   [for ip in module.app.private_ips : ip]
+  value       = [for ip in module.app.private_ips : ip]
 }
 
 output "ssh_config_bastion" {

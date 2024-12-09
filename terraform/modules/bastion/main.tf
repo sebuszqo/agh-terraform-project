@@ -4,10 +4,10 @@ resource "aws_key_pair" "shared_key" {
 }
 
 resource "aws_instance" "bastion" {
-  ami             = "ami-0453ec754f44f9a4a"
-  instance_type   = "t2.micro"
-  subnet_id       = var.subnet_id
-  key_name        = aws_key_pair.shared_key.key_name
+  ami                    = "ami-0453ec754f44f9a4a"
+  instance_type          = "t2.micro"
+  subnet_id              = var.subnet_id
+  key_name               = aws_key_pair.shared_key.key_name
   vpc_security_group_ids = [aws_security_group.bastion.id]
 
   tags = {
