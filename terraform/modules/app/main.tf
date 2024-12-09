@@ -71,13 +71,11 @@ resource "aws_autoscaling_group" "app" {
   vpc_zone_identifier = var.subnet_ids
   target_group_arns   = [var.target_group_arn]
 
-  tags = [
-    {
-      key                 = "Name"
-      value               = "App-Instance"
-      propagate_at_launch = true
-    }
-  ]
+  tag {
+    key                 = "Name"
+    value               = "App-Instance"
+    propagate_at_launch = true
+  }
 }
 
 data "aws_autoscaling_group" "app_asg" {
