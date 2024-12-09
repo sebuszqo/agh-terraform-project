@@ -1,14 +1,14 @@
-         ___        ______     ____ _                 _  ___  
-        / \ \      / / ___|   / ___| | ___  _   _  __| |/ _ \ 
-       / _ \ \ /\ / /\___ \  | |   | |/ _ \| | | |/ _` | (_) |
-      / ___ \ V  V /  ___) | | |___| | (_) | |_| | (_| |\__, |
-     /_/   \_\_/\_/  |____/   \____|_|\___/ \__,_|\__,_|  /_/ 
- ----------------------------------------------------------------- 
+# AGH Terraform Project
 
+## Overview
+This project manages AWS infrastructure using Terraform, including a bastion host, ec2 app instances and RDS instances and network setup (VPC, subnets, security groups).
 
-Hi there! Welcome to AWS Cloud9!
+## Quick Start
+- Initialize Terraform: `make init`
+- Plan changes: `make plan`
+- Apply changes: `make apply`
+- Destroy resources: `make destroy`
+- Format terraform code: `make fmt`
 
-To get started, create some files, play with the terminal,
-or visit https://docs.aws.amazon.com/console/cloud9/ for our documentation.
-
-Happy coding!
+## terraform-backend
+This catalog creates S3 bucket that is used to store tfstate for "terraform" catalog that is main app.
