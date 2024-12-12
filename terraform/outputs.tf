@@ -30,3 +30,7 @@ output "ssh_config_app" {
   ])
 }
 
+
+# output "db_endpoint" {
+#   value = module.rds.db_endpoint
+# }

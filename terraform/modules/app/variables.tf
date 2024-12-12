@@ -6,7 +6,7 @@ variable "instance_count" {
 variable "ami_id" {
   type        = string
   description = "AMI ID for the instances"
-  default     = "ami-0453ec754f44f9a4a"
+  default     = "ami-064519b8c76274859"
 }
 
 variable "instance_type" {
@@ -25,14 +25,9 @@ variable "vpc_id" {
   description = "VPC ID"
 }
 
-variable "alb_security_group_id" {
+variable "app_security_group_id" {
   type        = string
-  description = "Security Group ID for Load Balancer"
-}
-
-variable "bastion_security_group_id" {
-  type        = string
-  description = "Security Group ID for Bastion"
+  description = "Security Group ID for App"
 }
 
 variable "target_group_arn" {

@@ -1,35 +1,6 @@
 resource "aws_key_pair" "app_key" {
-  key_name   = "app-ssh-key"
+  key_name   = "app-agh-ssh-key"
   public_key = file("~/.ssh/app_key.pub")
-}
-
-resource "aws_security_group" "app_sg" {
-  name   = "app-security-group"
-  vpc_id = var.vpc_id
-
-  ingress {
-    description     = "Allow HTTP from ALB"
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [var.alb_security_group_id]
-  }
-
-  ingress {
-    description     = "Allow SSH from Bastion"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [var.bastion_security_group_id]
-  }
-
-  egress {
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 resource "aws_launch_template" "app" {
@@ -37,14 +8,14 @@ resource "aws_launch_template" "app" {
   instance_type          = var.instance_type
   image_id               = var.ami_id
   key_name               = aws_key_pair.app_key.key_name
-  vpc_security_group_ids = [aws_security_group.app_sg.id]
+  vpc_security_group_ids = [var.app_security_group_id]
 
   user_data = base64encode(<<-EOF
       #!/bin/bash
-      yum update -y
-      yum install -y httpd
-      systemctl start httpd
-      systemctl enable httpd
+      apt update -y
+      apt install -y apache2
+      systemctl start apache2
+      systemctl enable apache2
     
       echo "Hello, World from ASG!" > /var/www/html/index.html
   EOF
