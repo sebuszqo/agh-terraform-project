@@ -10,6 +10,17 @@ resource "aws_launch_template" "app" {
   key_name               = aws_key_pair.app_key.key_name
   vpc_security_group_ids = [var.app_security_group_id]
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size           = 20
+      volume_type           = "gp3"
+      encrypted             = true
+      delete_on_termination = true
+    }
+  }
+
   user_data = base64encode(<<-EOF
       #!/bin/bash
       apt update -y
@@ -29,6 +40,7 @@ resource "aws_launch_template" "app" {
     }
   }
 }
+
 
 resource "aws_autoscaling_group" "app" {
   launch_template {
